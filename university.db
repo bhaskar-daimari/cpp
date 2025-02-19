@@ -1,0 +1,97 @@
+create table DEPARTMENT(
+dept_name VARCHAR(50) PRIMARY KEY,
+building VARCHAR(50),
+budget decimal(10,3) );
+
+
+create table INSTRUCTOR(
+I_id INT PRIMARY KEY,
+first_name VARCHAR(50),
+middle_name VARCHAR(50),
+last_name VARCHAR(50),
+salary DECIMAL(10,2),
+dept_name VARCHAR(50),FOREIGN KEY(dept_name) REFERENCES DEPARTMENT(dept_name));
+
+create table STUDENT(
+student_id INT PRIMARY KEY,
+first_name VARCHAR(50),
+middle_name VARCHAR(50),
+last_name VARCHAR(50),
+tot_credit INT,
+dept_name VARCHAR(50), FOREIGN KEY(dept_name) REFERENCES DEPARTMENT(dept_name));
+
+create table COURSE(
+course_id INT PRIMARY KEY,
+title VARCHAR(50),
+credit INT,
+dept_name VARCHAR(50), FOREIGN KEY(dept_name) REFERENCES
+DEPARTMENT(dept_name));
+
+
+create table TIME_SLOT(
+time_slot_id INT PRIMARY KEY);
+
+create table CLASSROOM(
+building VARCHAR(50),
+room_no VARCHAR(10),
+capacity INT,
+PRIMARY KEY(building, room_no));
+
+create table TIME_SLOT_A(
+time_slot_id INT PRIMARY KEY,
+day VARCHAR(10),
+start_time TIME,
+end_time TIME,
+FOREIGN KEY(time_slot_id) REFERENCES TIME_SLOT(time_slot_id));
+
+
+create table SECTION(
+course_id INT,
+section_id INT,
+semester VARCHAR(50),
+year INT,
+building VARCHAR(50),
+room_no VARCHAR(50),
+time_slot_id INT,
+PRIMARY KEY(course_id, section_id, semester, year),
+FOREIGN KEY(course_id) REFERENCES COURSE(course_id),
+FOREIGN KEY(building, room_no) REFERENCES CLASSROOM(building, room_no),
+FOREIGN KEY(time_slot_id) REFERENCES TIME_SLOT(time_slot_id));
+
+
+create table TAKES(
+course_id INT,
+section_id INT,
+semester VARCHAR(50),
+year INT,
+student_id INT,
+grade VARCHAR(2),
+PRIMARY KEY(course_id, section_id, semester, year, student_id),
+FOREIGN KEY(course_id, section_id, semester, year) REFERENCES SECTION(course_id, section_id, semester, year),
+FOREIGN KEY(student_id) REFERENCES STUDENT(student_id));
+
+create table TEACHES(
+course_id INT,
+section_id INT,
+semester VARCHAR(50),
+year INT,
+I_id INT,
+PRIMARY KEY(course_id, section_id, semester, year, I_id),
+FOREIGN KEY(I_id) REFERENCES INSTRUCTOR(I_id),
+FOREIGN KEY(course_id, section_id, semester,year) REFERENCES SECTION(course_id, section_id, semester, year));
+
+
+create table PREREQUISITE(
+pre_id INT,
+course_id INT,
+PRIMARY KEY(pre_id, course_id),
+FOREIGN KEY(course_id) REFERENCES COURSE(course_id),
+FOREIGN KEY(pre_id) REFERENCES COURSE(course_id));
+
+
+create table ADVISOR(
+I_id INT,
+student_id INT,
+PRIMARY KEY(I_id, student_id),
+FOREIGN KEY(I_id) REFERENCES INSTRUCTOR(I_id),
+FOREIGN KEY(student_id) REFERENCES STUDENT(student_id));
